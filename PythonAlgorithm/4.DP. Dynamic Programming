@@ -1,0 +1,36 @@
+'''
+Fibo using recursion            -> O(2^n)
+Fibo using Dynamic programming  -> O(n)
+
+'''
+
+## Fibo using Dynamic programming
+fibos = []
+for i in range(100):
+    fibos.append(-1)
+
+def fibo_dyn(num, flist) :
+    if num == 1 or num == 2 :
+        return 1
+    if (flist[num] != -1) :
+        return flist[num]
+    else :
+        flist[num] = fibo_dyn(num-1,flist)+fibo_dyn(num-2,flist)
+        return flist[num]
+
+for i in range(1,10):
+    print(fibo_dyn(i, fibos))
+
+
+## Fibo using try-except
+def fibo(num, fibos):
+    if num == 1 or num == 2:
+        return 1
+    try:
+        fibos[num]
+    except KeyError:
+        fibos[num] = fibo(num-1,fibos) + fibo(num-2, fibos)
+    return fibos[num]
+fibos = {}
+for i in range(1, 10):
+    print(fibo(i,fibos))
