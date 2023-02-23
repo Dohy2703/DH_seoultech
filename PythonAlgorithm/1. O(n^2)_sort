@@ -1,0 +1,27 @@
+''' 
+<O(n^2) Algorithms>
+ - bubble sort : just iter
+ - insertion sort : From the second element, the minimum value of the previous elements is placed first.
+ - selection sort : Find the minimum element in all, then place first. iter 
+ 
+ - recursive call : Call the same function from within a function
+ '''
+ 
+# selection_sort
+
+def selection_sort(mylist):
+    result = []
+    while (len(mylist)>0):
+        max_number = mylist[0]
+        max_index=0
+        for i in range(len(mylist)):
+            if max_number<mylist[i]:
+                max_number=mylist[i]
+                max_index=mylist.index(max_number)
+        result.append(mylist.pop(max_index))
+    return result
+
+mylist = [3, 5, 7, 2, 9, 11, 2, 3, 8]
+result = selection_sort(mylist)
+print(result)
+
