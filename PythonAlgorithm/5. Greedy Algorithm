@@ -1,0 +1,86 @@
+## Find min number of coins
+def min_coins_greedy(coins, left) :
+    chosen = []
+    for coin in coins:
+        count = left // coin
+        chosen.append(count)
+        left -= count * coin
+    return chosen
+
+# coins list is sorted by value
+# coins = [500, 100, 10, 1]
+
+
+coins = [500, 100, 10, 1]
+changes = 1295
+print("잔돈: ", changes)
+print("동전 종류", coins)
+print("동전 개수", min_coins_greedy(coins, changes))
+
+## Knapsack using Greedy
+class Item(object):
+    def __init__(self, name, value, weight):
+        self.name = name
+        self.value = value
+        self.weight = weight
+
+    def __str__(self):
+        return ("(" + str(self.name) + "," + str(self.value) + "," + str(self.weight) + ")")
+
+
+class Knapsack(object):
+    def __init__(self, names, values, weights, max_weight):
+        self.items = []
+        self.max_weight = max_weight
+        self.max_value = 0
+        self.opt_case = 0
+
+        for i in range(len(names)):
+            item = Item(names[i], values[i], weights[i])
+            self.items.append(item)
+
+    def printItems(self):
+        for item in self.items:
+            print(item)
+
+    def findBestCaseGreedy1(self):
+        value = 0
+        weight = 0
+        best_chosen_items = []
+        self.items.sort(reverse=True, key=lambda x:x.value)
+        for i in range(len(self.items)):
+            if (weight + self.items[i].weight < self.max_weight):
+                best_chosen_items.append(self.items[i].name)
+                value += self.items[i].value
+                weight += self.items[i].weight
+        self.max_value = value
+        return (best_chosen_items, self.max_value)
+
+    # for item in self.items:
+    #     if (weight + item.weight < self.max_weight):
+    #         best_chosen_items.append(item.name)
+    #         value += item.value
+    #         weight += item.weight
+
+    def findBestCaseGreedy2(self):
+        value = 0
+        weight = 0
+        best_chosen_items = []
+        a=[]
+        self.items.sort(reverse=True, key=lambda x:(x.value/x.weight))
+        for i in range(len(self.items)):
+            if (weight + self.items[i].weight < self.max_weight):
+                best_chosen_items.append(self.items[i].name)
+                value += self.items[i].value
+                weight += self.items[i].weight
+        self.max_value = value
+        return (best_chosen_items, self.max_value)
+
+
+names = ['0', '1', '2', '3', '4', '5', '6', '7']
+values = [10, 30, 20, 14, 23, 11, 15, 18]
+weights = [5, 8, 3, 7, 9, 2, 6, 1]
+max_weight = 20
+knapsack = Knapsack(names, values, weights, max_weight)
+(best_chosen_items, max_value) = knapsack.findBestCaseGreedy2()
+print(best_chosen_items, max_value)
