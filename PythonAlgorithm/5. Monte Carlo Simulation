@@ -1,0 +1,142 @@
+
+## Knapsack using MC
+
+import random
+
+class Item(object):
+    def __init__(self, name, value, weight):
+        self.name = name
+        self.value = value
+        self.weight = weight
+
+class Knapsack(object):
+    def __init__(self, names, values, weights, max_weight):
+        self.items = []
+        self.max_weight = max_weight
+        self.max_value = 0
+        self.opt_case = 0
+
+        for i in range(len(names)) :
+            item = Item(names[i], values[i], weights[i])
+            self.items.append(item)
+
+    def findBestCaseMontecarlo(self, tries=10000):
+        item_count = len(self.items)
+        self.max_value = 0
+        self.chosen_items = []
+        chosen_items = []
+        for j in range(tries):
+            chosen_items.clear()
+            weight = 0
+            value = 0
+            for i in range(item_count):
+                if (weight + self.items[i].weight > self.max_weight):
+                    continue;
+                if (random.randint(1,2) == 1):
+                    # print('1')
+                    chosen_items.append(self.items[i].name)
+                    value += self.items[i].value
+                    weight += self.items[i].weight
+            if (weight <= self.max_weight) and (value > self.max_value):
+                print(value)
+                self.chosen_items=chosen_items.copy()
+                self.max_value = value
+        return self.chosen_items, self.max_value
+
+names = ['0', '1', '2', '3', '4', '5', '6', '7']
+values = [10, 30, 20, 14, 23, 11, 15, 18]
+weights = [5, 8, 3, 7, 9, 2, 6, 1]
+max_weight = 20
+knapsack = Knapsack(names, values, weights, max_weight)
+(chosen_items, max_value) = knapsack.findBestCaseMontecarlo(1000)
+print(chosen_items, max_value)
+
+
+
+## Pocker Card Game
+import random
+
+class Card:
+    def __init__(self, kind, number):
+        self.kind = kind
+        self.number = number
+
+class Player:
+    def __init__(self) :
+        self.cards = []
+
+    def printCards(self):
+        for card in self.cards:
+            print(card.kind + " " + str(card.number))
+
+class Poker:
+    def __init__(self, playerCnt=1, distCardCnt=5):
+        self.distCardCnt = distCardCnt
+        self.playerCnt = playerCnt
+        self.cards = []
+        self.players = []
+        self.generateCards()
+        self.shuffleCards()
+        self.createPlayers()
+
+    def generateCards(self):
+        self.cards = []
+        kinds = ['spade', 'heart', 'diamond', 'clover']
+        for i in range(4):
+            for j in range(13):
+                card = Card(kinds[i], j + 1)
+                self.cards.append(card)
+        return
+
+    def shuffleCards(self):
+        random.shuffle(self.cards)
+
+    def createPlayers(self):
+        for j in range(self.playerCnt):
+            player = Player()
+            self.players.append(player)
+
+    def printCards(self):
+        for card in self.cards:
+            print(card.kind + " " + str(card.number))
+
+    def playCards(self):
+        for i in range(self.distCardCnt):
+            for j in range(self.playerCnt):
+                card = self.cards.pop()
+                self.players[j].cards.append(card)
+
+    def printPlayerCards(self):
+        player_num = 1
+        for player in self.players:
+            print("\nplayer ", player_num, ":\n")
+            player.printCards()
+            player_num += 1
+
+    def countFlush(self):
+        count = 0
+        for player in self.players:
+            if (self.isFlush(player.cards) == True):
+                count += 1
+        return count
+
+    def isFlush(self, targetCards):
+        kindCnt = {'spade': 0, 'heart': 0, 'diamond': 0, 'clover': 0}
+
+        for card in targetCards:
+            kindCnt[card.kind] += 1
+        for key in kindCnt.keys():
+            if (kindCnt[key] >= 5):
+                return True;
+        return False
+# playerCnt = 1
+# distCardCnt = 5
+# poker = Poker(playerCnt, distCardCnt)
+# poker.printCards()
+
+playerCnt = 3
+distCardCnt = 5
+poker = Poker(playerCnt, distCardCnt)
+poker.printCards()
+# poker.playCards()
+# poker.printPlayerCards()
