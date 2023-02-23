@@ -412,7 +412,7 @@ while True:
         except sr.RequestError as e:
             print("Uh oh! Couldn't request results from Google Speech Recognition service; {0}".format(e))
 
-        if "신과함께" in value or "신과 함께" in value or "신 과함께" in value or "신과함 께" in value or "신예종" in value:
+        if "신과함께" in value or "신과 함께" in value or "신 과함께" in value or "신과함 께" in value:
             text_speak("네")
             micOn = True
             value = ""
