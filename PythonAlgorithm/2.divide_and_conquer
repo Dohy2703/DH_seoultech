@@ -1,0 +1,70 @@
+'''
+O(n^2) Algorithm - recursion
+O(n*log n) Algorithm - merge sort
+
+'''
+
+## Factorial
+def my_fact(n):
+    if (n == 1):
+        return 1
+    return (n * my_fact(n-1))
+
+print(my_fact(5))
+
+
+## Fibonacci numbers
+def fibo(n):
+    if (n==1 or n==2):
+        return 1
+    return fibo(n-1) + fibo(n-2)
+
+print(fibo(3))
+print(fibo(5))
+
+
+## Hanoi Tower
+def hanoi(num, frm, to, other):
+    if (num==1):
+        print("move",num,frm,"to",to)
+        return
+    hanoi(num-1,frm,other,to)
+    print("move",num,frm,"to",to)
+    hanoi(num-1,other,to,frm)
+
+hanoi(3,'a','c','b')
+'''
+move 1 a to c
+move 2 a to b
+move 1 c to b
+move 3 a to c
+move 1 b to a
+move 2 b to c
+move 1 a to c
+'''
+
+## Merge sort
+def merge_sort(list):
+    if (len(list) == 1):
+        return list
+    list1 = list[0:(int)(len(list)/2)] # mid is the middle point
+    list2 = list[int(len(list)/2):len(list)]
+    list1 = merge_sort(list1)    # by recursion
+    list2 = merge_sort(list2)
+    result = merge(list1, list2)
+    return result
+
+def merge(list1, list2):
+    result = []
+    while (list1 != [] and list2 != []): #while( len(list1)>0 and len(list2)>0 )
+        if(list1[0] < list2[0]): #  > : ascending order, < : descending order
+            result.append(list1.pop(0))
+        else:
+            result.append(list2.pop(0))
+    while(list1 != []):   # while(len(list))
+        result.append(list1.pop(0))
+    while(list2 != []):
+        result.append(list2.pop(0))
+    return result
+
+print(merge_sort([8,5,6,4,3,2,1])) # O(n*log n)
