@@ -22,7 +22,7 @@ class Stack:
         return node.item
 
     def print_stack(self):
-        self.stack.print_list()
+        self.stack.print()
 
 def parenthesis(string):
     s = Stack()
@@ -50,3 +50,8 @@ def parenthesis(string):
 
 string = input("input a string : ")
 parenthesis(string)
+
+'''
+input a string : {[()]}
+right match
+'''
