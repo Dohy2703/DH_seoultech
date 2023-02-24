@@ -1,5 +1,5 @@
 '''
-Lecture note by Ilhoon Shin
+Lecture note by Prof.Ilhoon Shin
 '''
 
 class DNode:
@@ -132,3 +132,12 @@ if __name__ == '__main__':
     d.print()
     d.delete_back()
     d.print()
+
+
+'''
+apple -> orange -> mango
+apple -> orange -> mango
+apple -> mango -> orange
+mango -> orange
+mango
+'''
