@@ -26,10 +26,8 @@ class Hashing_Table():
                 return False
 
     def print_table(self):
-        i = 0
-        for tuple in self.table:
-            print(i, tuple)
-            i += 1
+        for idx, tuple in enumerate(self.table):
+            print(idx, tuple)
         print()
 
     def search(self, key):
