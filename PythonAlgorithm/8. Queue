@@ -1,0 +1,53 @@
+'''
+Lecture note by Prof.Ilhoon Shin
+'''
+
+import DoublyLinkedList # Refer to my previous file
+
+
+class Queue:
+    def __init__(self):
+        self.queue = DoublyLinkedList.DList()
+        self.count = 0
+
+    def enqueue(self, item):
+        self.queue.insert_back(item)
+        self.count += 1
+
+    def dequeue(self):
+        dnode = self.queue.delete_front()
+        self.count -= 1
+        if dnode != None:
+            return dnode.item
+        else:
+            return None
+
+    def print_queue(self):
+        self.queue.print()
+
+    def size(self):
+        return self.count
+
+if __name__ == '__main__':
+    q = Queue()
+    q.enqueue('mango')
+    q.enqueue('apple')
+    q.enqueue('orange')
+    q.print_queue()
+    q.dequeue()
+    q.print_queue()
+    q.dequeue()
+    q.print_queue()
+    q.dequeue()
+    q.print_queue()
+    q.dequeue()
+    q.print_queue()
+    
+'''
+mango -> apple -> orange
+apple -> orange
+orange
+list already empty
+already empty
+list already empty
+'''
