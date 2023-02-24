@@ -1,0 +1,97 @@
+'''
+searching : O(n)
+front insert : O(1)
+back insert : O(N) if the previous node is not given
+Delete : O(1) if the previous node is given, O(N) otherwise
+
+lecture note by Prof.Ilhoon Shin
+'''
+
+class SNode(object):
+    def __init__(self, item, next=None):
+        self.item = item
+        self.next = next
+
+
+class SList:
+    def __init__(self):
+        self.head = None
+
+    def insert_front(self, item):
+        if self.head is None:
+            snode = SNode(item, None)
+            self.head = snode
+            return
+
+        else:
+            snode = SNode(item, self.head)
+            self.head = snode
+            return
+
+    def insert_back(self, item):
+        if self.head is None:
+            self.insert_front(item)
+            return None
+        num = self.head
+        while num.next:
+            num = num.next
+        num.next = SNode(item)
+
+    def delete_back(self):
+        if self.head != None:
+            if self.head.next is None:
+                self.delete_front()
+                return None
+            num = self.head
+            while num.next.next:
+                num = num.next
+            num.next = None
+        else :
+            print("The List is already Empty!")
+
+    def print_node(self):
+        num = self.head
+        while num:
+            if (num.next != None):
+                print(num.item, '-> ', end='')
+            else:
+                print(num.item)
+
+            num = num.next
+
+    def delete_front(self):
+        if (self.head != None):
+            self.head = self.head.next
+
+        else:
+            print("The List is already Empty!")
+
+    def delete_target(self, item):
+        if (self.head == None):
+            print('empty')
+            return None
+        elif (self.head.item == item):
+            return self.delete_front()
+
+        cur = self.head
+        while cur.next:
+            if item == cur.next.item:
+                target = cur.next
+                cur.next = target.next #건너뛰기
+                return target
+            cur = cur.next
+        print("not found")
+        return None
+
+a = SList()
+a.insert_front("mango")
+a.insert_front("tomato")
+a.insert_front("orange")
+a.insert_front("apple")
+a.insert_front("peach")
+a.delete_back()
+a.insert_back("bear")
+a.print_node()
+
+
+# peach -> apple -> orange -> tomato -> bear
