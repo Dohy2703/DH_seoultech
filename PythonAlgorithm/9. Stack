@@ -1,0 +1,52 @@
+'''
+Lecture note by Prof.Ilhoon Shin
+
+Queue : FIFO(First In First Out)
+                        vs
+Stack : Push(Insert from top) Pop(Delete from top) 
+'''
+
+import DoublyLinkedList # refer to 7. Doubly Linked List
+
+class Stack:
+    def __init__(self):
+        self.stack = DoublyLinkedList.DList()
+
+    def push(self, item):      # O(1)
+        self.stack.insert_front(item)
+
+    def pop(self):             # O(1)
+        node = self.stack.delete_front()
+        if (node == None):
+            return None
+        return node.item
+
+    def print_stack(self):
+        self.stack.print_list()
+
+def parenthesis(string):
+    s = Stack()
+    result = True
+    parenthesis_dict = {'{':'}', '[':']', '(':')'}
+    left_parenthesis = parenthesis_dict.keys()
+    right_parenthesis = parenthesis_dict.values()
+    for char in string:
+        if char in left_parenthesis:
+            s.push(char)
+            s.print_stack()
+        elif char in right_parenthesis:
+            left = s.pop()
+            print('left', left)
+            if (left == None or parenthesis_dict[left] != char):
+                print("wrong match", left, char)
+                result = False
+                break
+    left = s.pop()
+    if (left != None):
+        print("wrong match", left)
+        result = False
+    if (result == True):
+        print('right match')
+
+string = input("input a string : ")
+parenthesis(string)
