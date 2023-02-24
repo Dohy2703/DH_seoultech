@@ -1,0 +1,91 @@
+'''
+Lecture note by Prof.Ilhoon Shin
+'''
+
+class Hashing_Table():
+    def __init__(self, size):
+        self.tablesize = size
+        self.table = [(None, None)] * size
+
+    def hash(self, key):
+        return key % self.tablesize
+
+    def add(self, key, value):
+        initial_position = self.hash(key)
+        position = initial_position
+        while True:
+            (fkey, fvalue) = self.table[position]
+            if fvalue == None:  # (1) if an empty bucket, insert
+                self.table[position] = (key, value)
+                return True
+            elif fkey == key:  # (2) if the same key is found, update
+                self.table[position] = (key, value)
+                return True
+            position = (position + 1) % self.tablesize  # move to next bucket
+            if position == initial_position:  # if there's no empty bucket to insert, go to initial position
+                return False
+
+    def print_table(self):
+        i = 0
+        for tuple in self.table:
+            print(i, tuple)
+            i += 1
+        print()
+
+    def search(self, key):
+        initial_position = self.hash(key)
+        position = initial_position
+        while True:
+            (fkey, fvalue) = self.table[position]
+            if fkey == key:  # (1)
+                return fvalue
+            if fkey == None:
+                return None
+            position = (position + 1) % self.tablesize
+            if position == initial_position:
+                return None
+
+    def remove(self, key):
+        initial_position = self.hash(key)
+        position = initial_position
+        while True:
+            (fkey, fvalue) = self.table[position]
+            if fkey == key:
+                self.table[position] = (-1, None)
+                return fvalue
+            elif fkey == None:
+                return False
+            position = (position + 1) % self.tablesize
+            if position == initial_position:
+                return None
+
+t = Hashing_Table(7)
+t.add(7, 'grape')
+t.add(1, 'apple')
+t.add(2, 'banana')
+t.print_table()
+t.add(15, 'orange')
+t.add(9, 'mango')
+t.add(10, 'lemon')
+t.add(3, 'berry')
+t.remove(3)
+t.add(4, 'cherry')
+t.print_table()
+
+'''
+0 (7, 'grape')
+1 (1, 'apple')
+2 (2, 'banana')
+3 (None, None)
+4 (None, None)
+5 (None, None)
+6 (None, None)
+
+0 (7, 'grape')
+1 (1, 'apple')
+2 (2, 'banana')
+3 (15, 'orange')
+4 (9, 'mango')
+5 (10, 'lemon')
+6 (4, 'cherry')
+'''
