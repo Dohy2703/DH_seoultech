@@ -1,0 +1,134 @@
+'''
+Lecture note by Ilhoon Shin
+'''
+
+class DNode:
+    def __init__(self, item, prev=None, next=None):
+        self.item = item
+        self.prev = prev
+        self.next = next
+
+class DList:
+    def __init__(self):
+        self.head = None
+
+    def insert_front(self, item):   # O(1)
+        dnode = DNode(item, None, self.head)
+
+        first = self.head
+        if (first != None):
+            first.prev = dnode
+
+        self.head = dnode
+
+    def insert_back(self, item):   # O(N). O(1) if previous node is given
+        if self.head is None:
+            return self.insert_front(item)
+        num = self.head
+        while num.next:
+            num = num.next
+        num.next = DNode(item)
+        num.next.prev = num
+
+    def print(self):
+        if self.head == None:
+            print('list already empty')
+        else:
+            p = self.head
+            while p:
+                if (p.next != None):
+                    print(p.item, '-> ', end='')
+                else:
+                    print(p.item)
+                p = p.next
+
+    def delete_front(self):   # O(1)
+        a = self.head
+        if (self.head != None):
+            self.head = self.head.next
+            if self.head :
+                self.head.prev = None
+        else :
+            print('already empty')
+        return a
+
+    def delete_back(self):  # O(n). O(1) if previous node is given
+        if self.head != None:
+            if self.head.next is None:
+                self.delete_front()
+                return None
+            num = self.head
+            while num.next.next:
+                num = num.next
+            num.next = None
+
+        else:
+            print("The List is already Empty!")
+
+
+    def search(self, item):  # O(n)
+        p = self.head
+        while p:
+            if (p.item == item):
+                return p
+            p = p.next
+        return None
+
+    def delete_target(self, item):
+        q=self.search(item)
+        if (q==None): return print('No item :', str(item))
+
+        if (q==self.head):
+            new_first = q.next
+            self.head = new_first
+            if (new_first != None):
+                new_first.prev = None
+        else :
+            target_next = q.next
+            target_prev = q.prev
+
+            target_prev.next = target_next
+            if (target_next != None) :
+                target_next.prev = target_prev
+
+        return q
+
+    def delete_target2(self, target):
+        p=self.head
+        while p :
+            if (target == p.item):
+                if (p.prev != None):
+                    p.prev.next = p.next
+                else :
+                    self.head = p.next
+                if (p.next != None):
+                    p.next.prev = p.prev
+            p=p.next
+        return p
+
+    def move_front(self, item):
+        if item == self.head :
+            return None
+        found = self.search(item)
+        self.delete_target(found.item)
+        self.insert_front(found.item)
+
+    def move_back(self, item):
+        found = self.search(item)
+        self.delete_target(found.item)
+        self.insert_back(found.item)
+
+if __name__ == '__main__':
+    d = DList()
+    d.insert_front('mango')
+    d.insert_front('orange')
+    d.insert_front('apple')
+    d.print()
+    d.move_front('apple')
+    d.print()
+    d.move_back('orange')
+    d.print()
+    d.delete_front()
+    d.print()
+    d.delete_back()
+    d.print()
