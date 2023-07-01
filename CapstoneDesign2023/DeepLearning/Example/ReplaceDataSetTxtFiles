@@ -1,0 +1,57 @@
+import glob
+
+User_name = '****'
+
+path = "C://Users//" + User_name + "//Desktop//CapstoneDesign.v11i.yolov5pytorch(2)"
+train_labels = glob.glob(path+'//train//labels//*.txt')
+valid_labels = glob.glob(path+'//valid//labels//*.txt')
+test_labels = glob.glob(path+'//test//labels//*.txt')
+yaml_path = path+'//data.yaml'
+
+def replace_txt(list):
+    for txt_file in list :
+        new_ls = []
+        with open(txt_file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if line[0] == '1':
+                    new_ls.append('0'+line[1:])
+
+        with open(txt_file, 'w') as f:
+            for line in new_ls:
+                f.write(line)
+
+def replace_yaml(yaml_path, nc_num, names_ls):
+    idx_ls = []
+    with open(yaml_path, 'r') as f:
+        lines = f.readlines()
+        for idx, line in enumerate(lines):
+            if line[:3] == 'nc:':
+                lines[idx] = 'nc: '+str(nc_num)
+                idx_ls.append(idx)
+            elif line[:6] == 'names:':
+                names_str = ''
+                for i in names_ls:
+                    names_str += i
+                    if not names_ls.index(i) == len(names_ls)-1:
+                        names_str += ', '
+                lines[idx] = 'names: [\'' + names_str + '\']' # +'\n'
+                idx_ls.append(idx)
+
+        with open(yaml_path, 'w') as f:
+            for idx, line in enumerate(lines):
+                f.write(line)
+                if idx in idx_ls:
+                    f.write('\n')
+
+if __name__ == '__main__':
+    replace_txt(train_labels)
+    replace_txt(valid_labels)
+    replace_txt(test_labels)
+    replace_yaml(yaml_path, 1, ['Labels'])
+'''
+original
+nc: 2
+names: ['Books', 'Labels']
+'''
+
