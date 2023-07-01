@@ -1,0 +1,18 @@
+'''
+change dataset images' name
+'''
+
+import glob
+import os
+
+image_set_num = 6 # change number 5 -> index
+user_name = "  " # your name
+  
+path = "C://Users//" + user_name  + "//Desktop//Capstone_Design_Dataset//" + str(image_set_num)
+cnt = 0  # starting number
+
+output = glob.glob(path+'//*.jpg')
+for item in output :
+    str_ = path+"//" + str(image_set_num) + "_" + str(cnt).zfill(3)+".jpg"
+    os.rename(item, str_)
+    cnt += 1
