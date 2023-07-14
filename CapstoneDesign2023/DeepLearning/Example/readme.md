@@ -6,7 +6,7 @@ EasyOCR
 
 * hardware *
 
-pyrealsense D435
+intelrealsense D435
 
 * Usage *
 
