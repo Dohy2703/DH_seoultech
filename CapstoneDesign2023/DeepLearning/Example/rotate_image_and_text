@@ -1,0 +1,308 @@
+'''
+pythonProject
+- yolov5
+  - segment
+    -predict
+- 'this file'
+'''
+
+import glob
+import cv2
+import numpy as np
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from yolov5.segment import predict
+
+dataset_path = '/home/kdh/Desktop/book_spine(3)'
+# dataset_path = '/home/kdh/Desktop/example/example1'
+
+train_images = glob.glob(dataset_path+'/train/images/*.jpg')
+valid_images = glob.glob(dataset_path+'/valid/images/*.jpg')
+test_images = glob.glob(dataset_path+'/test/images/*.jpg')
+
+train_labels = glob.glob(dataset_path+'/train/labels/*.txt')
+valid_labels = glob.glob(dataset_path+'/valid/labels/*.txt')
+test_labels = glob.glob(dataset_path+'/test/labels/*.txt')
+yaml_path = dataset_path+'/data.yaml'
+
+'''
+def visualize_txt_to_img():
+    global train_images, valid_images, test_images, train_labels, valid_labels, test_labels
+    IMG_train_idx = train_images[0].find('IMG')
+    IMG_valid_idx = valid_images[0].find('IMG')
+    IMG_test_idx = test_images[0].find('IMG')
+
+    train_images = [train_images[0]]
+
+    for idx, img_path in enumerate(train_images):
+        for label_path in train_labels :
+            if train_images[0][IMG_train_idx:-4] in label_path:
+                convert_txt_to_contours(img_path, label_path, print_=True, show_=True)
+
+                # with open(label_path, 'r') as f:
+                #     # f.read()
+                #     print(f.read())
+
+    # convert_txt_to_contours
+
+
+            # with open(item, 'w') as f:
+            #     f.write()
+
+            # print(item)
+            # break
+'''
+
+'''
+def add_to_txt():
+    txt_file = '/home/kdh/Desktop/example.txt'
+
+    with open(txt_file, 'r') as f:
+        read_str = f.read()
+        # print(read_str)
+    with open(txt_file, 'w') as f:
+        f.write(read_str+'\n'+read_str)
+'''
+
+
+def convert_txt_to_contours(path_img, path_txt, print_=False, show_=False):
+    # path_img = '/home/kdh/Desktop/book_spine/train/'+'images/'+'IMG_4773_JPEG_jpg.rf.f4085b8610e99106d399accea8a38cb0.jpg'
+    # path_txt = '/home/kdh/Desktop/book_spine/train/' + 'labels/'+ 'IMG_4773_JPEG_jpg.rf.f4085b8610e99106d399accea8a38cb0.txt'
+    img = cv2.imread(path_img)
+    lines_list = []
+    points = np.array([])
+
+    with open(path_txt, 'r') as f:
+        for item in f.readlines():
+            lines = item.split(' ')
+            if '\n' in lines[-1]:
+                lines[-1] = lines[-1][:-1]
+            lines.pop(0)
+            if print_ : print('list : ', lines)
+            if print_ : print('length of line : ',len(lines))
+            lines_list.append(lines)
+
+    # points_list = np.empty((0,2), int)
+    points_list = []
+    for lines in lines_list:
+        points = np.empty((0,2), int)
+        for i in range(int(len(lines)/2)):
+            # print(lines)
+            points = np.append(points, np.array([[np.intp(640.*float(lines[2*i])), np.intp(640.*float(lines[2*i+1]))]]), axis=0)
+        if print_ : print('points : \n',points)
+        img = cv2.drawContours(img, [points], 0, (0, 255, 0), 3)
+        # points_list = np.append(points_list, points, axis=0)
+        points_list.append(points)
+
+    if show_:
+        cv2.imshow('img', img)
+        cv2.waitKey(0)
+
+    if print_ : print('points_list : ', points_list)
+    return points_list
+
+def convert_txt_to_contours2(img_np, path_txt, print_=False, show_=False):
+    # path_img = '/home/kdh/Desktop/book_spine/train/'+'images/'+'IMG_4773_JPEG_jpg.rf.f4085b8610e99106d399accea8a38cb0.jpg'
+    # path_txt = '/home/kdh/Desktop/book_spine/train/' + 'labels/'+ 'IMG_4773_JPEG_jpg.rf.f4085b8610e99106d399accea8a38cb0.txt'
+    img = img_np
+    lines_list = []
+    points = np.array([])
+
+    with open(path_txt, 'r') as f:
+        for item in f.readlines():
+            lines = item.split(' ')
+            if '\n' in lines[-1]:
+                lines[-1] = lines[-1][:-1]
+            lines.pop(0)
+            if print_ : print('list : ', lines)
+            if print_ : print('length of line : ',len(lines))
+            lines_list.append(lines)
+
+    # points_list = np.empty((0,2), int)
+    points_list = []
+    for lines in lines_list:
+        points = np.empty((0,2), int)
+        for i in range(int(len(lines)/2)):
+            # print(lines)
+            points = np.append(points, np.array([[np.intp(640.*float(lines[2*i])), np.intp(640.*float(lines[2*i+1]))]]), axis=0)
+        if print_ : print('points : \n',points)
+        img = cv2.drawContours(img, [points], 0, (0, 255, 0), 3)
+        # points_list = np.append(points_list, points, axis=0)
+        points_list.append(points)
+
+    if show_:
+        cv2.imshow('img', img)
+        # cv2.waitKey(0)
+
+    if print_ : print('points_list : ', points_list)
+    return points_list
+
+def convert_contour_to_txt(write_=False):
+    list = np.array([[[124, 509], [135, 507], [141, 529], [131, 532], [124, 509]],[[124, 509], [135, 507], [141, 529], [131, 532], [124, 509]]])
+    list = list.astype(float) / 640.
+
+    txt_file = '/home/kdh/Desktop/example.txt'
+
+    if write_ :
+        with open(txt_file, 'w') as f:
+            for i in list:
+                f.write(str(1))
+                for j in i.reshape(-1):
+                    f.write(' '+str(j))
+                f.write('\n')
+
+
+def rotate_img_and_txt(path_img, path_txt, write_=False):
+    # path_img = '/home/kdh/Desktop/example/IMG_4772_JPEG_jpg.rf.a7cec6356330dd7056c498a02a053766.jpg'
+    # path_txt = '/home/kdh/Desktop/example/IMG_4772_JPEG_jpg.rf.a7cec6356330dd7056c498a02a053766.txt'
+
+    cps_list = convert_txt_to_contours(path_img, path_txt, print_=False) # center points
+
+    rotate_angle = 0
+
+    key = 'A'
+
+    ime = cv2.imread(path_img)
+
+    while (key != ord('s')) :
+        def mouse_event(event, x, y, flags, param):
+            nonlocal rotate_angle
+            if event == cv2.EVENT_LBUTTONDOWN:
+                cv2.circle(param, (x, y), 5, (255, 0, 0), 2)
+                cv2.imshow("mouse", ime)
+                rotate_angle = 90+int(np.degrees(np.arctan2(y-320, x-320)))
+
+        cv2.imshow('mouse', ime)
+        cv2.setMouseCallback("mouse", mouse_event, ime)
+        # cv2.waitKey()
+
+        # 마우스 클릭하면 그 각도로 회전
+
+        imd = cv2.imread(path_img)
+        cX, cY = 320, 320
+        M = cv2.getRotationMatrix2D((cX, cY), rotate_angle, 1.0)
+        imd = cv2.warpAffine(imd, M, (640, 640))
+
+        new_cps_list = []
+        for cps in cps_list:
+            new_cps = []
+            for cp in cps:
+                org_ang = np.degrees(np.arctan2(cp[1] - cY, cp[0] - cX))
+                radius = np.sqrt((cX - cp[0]) ** 2 + (cY - cp[1]) ** 2)
+                rotated_cp = [cX + int(radius * np.cos(np.radians(-rotate_angle + org_ang))),
+                              cY + int(radius * np.sin(np.radians(-rotate_angle + org_ang)))]
+                float_rotated_cp = [round(float(rotated_cp[0])/640., 6), round(float(rotated_cp[1])/640., 6)]
+                new_cps.append((float_rotated_cp))
+            new_cps_list.append(new_cps)
+
+        txt_file = '/home/kdh/Desktop/temp.txt'
+        with open(txt_file, 'w') as f:
+            for i in new_cps_list:
+                f.write(str(0))
+                for j in sum(i, []):
+                    f.write(' '+str(j))
+                f.write('\n')
+
+        imf = imd.copy()
+        convert_txt_to_contours2(imf, txt_file, show_=True)
+        key = cv2.waitKey(0) & 0xFF
+    '''
+    if write_ :
+        with open(path_txt, 'w') as f:
+            for i in new_cps_list:
+                f.write(str(0))
+                for j in sum(i, []):
+                    f.write(' '+str(j))
+                f.write('\n')
+    if write_ :
+        cv2.imwrite(path_img, imd)
+    '''
+
+    # print(path_img)
+    # print(txt_file)
+
+
+def convert_txt_to_contours3(print_=False, show_=False):
+    path_img = '/home/kdh/Desktop/example/example1/IMG_4860_JPEG_jpg.rf.e0a26469f29b1f2e404059e5b5a0728f.jpg'
+    path_txt = '/home/kdh/Desktop/example/example1/IMG_4860_JPEG_jpg.rf.e0a26469f29b1f2e404059e5b5a0728f.txt'
+    img = cv2.imread(path_img)
+    lines_list = []
+    points = np.array([])
+
+    with open(path_txt, 'r') as f:
+        for item in f.readlines():
+            lines = item.split(' ')
+            if '\n' in lines[-1]:
+                lines[-1] = lines[-1][:-1]
+            lines.pop(0)
+            if print_ : print('list : ', lines)
+            if print_ : print('length of line : ',len(lines))
+            lines_list.append(lines)
+
+    # points_list = np.empty((0,2), int)
+    points_list = []
+    for lines in lines_list:
+        points = np.empty((0,2), int)
+        for i in range(int(len(lines)/2)):
+            # print(lines)
+            points = np.append(points, np.array([[np.intp(640.*float(lines[2*i])), np.intp(640.*float(lines[2*i+1]))]]), axis=0)
+        if print_ : print('points : \n',points)
+        img = cv2.drawContours(img, [points], 0, (0, 255, 0), 3)
+        # points_list = np.append(points_list, points, axis=0)
+        points_list.append(points)
+
+    if show_:
+        cv2.imshow('img', img)
+        # cv2.waitKey(0)
+
+    if print_ : print('points_list : ', points_list)
+    return points_list
+
+if __name__ == '__main__':
+    # convert_txt_to_contours(print_=True)
+    # convert_contour_to_txt(write_=True)
+    # visualize_txt_to_img()
+    # add_to_txt()
+
+    # training set
+    for i in range(len(train_images)):
+        train_image = train_images[i]
+        for labels_txt in train_labels:
+            if train_images[i][train_images[i].find('IMG'):-4] in labels_txt:
+                train_label = labels_txt
+                rotate_img_and_txt(train_image, train_label, write_=True)
+                print("train : "+str(i)+" / "+str(len(train_images)))
+                
+                break
+
+
+    '''
+    # valid set
+    for i in range(len(valid_images)):
+        valid_image = valid_images[i]
+        for labels_txt in valid_labels:
+            if valid_images[i][valid_images[i].find('IMG'):-4] in labels_txt:
+                valid_label = labels_txt
+                rotate_img_and_txt(valid_image, valid_label, write_=True)
+
+                print("valid : "+str(i)+" / "+str(len(valid_images)))
+                break
+    '''
+
+    '''
+    # test set
+    for i in range(len(test_images)):
+        test_image = test_images[i]
+        for labels_txt in test_labels:
+            if test_images[i][test_images[i].find('IMG'):-4] in labels_txt:
+                test_label = labels_txt
+                rotate_img_and_txt(test_image, test_label, write_=True)
+
+                print("test : "+str(i)+" / "+str(len(test_images)))
+                break
+    '''
+
+
+
+    # convert_txt_to_contours3(show_=True)
