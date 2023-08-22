@@ -1,0 +1,117 @@
+import time
+import sys
+import pandas as pd  #파일
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+options = webdriver.ChromeOptions()
+options.add_experimental_option("excludeSwitches", ["enable-logging"])
+
+driver = webdriver.Chrome(options=options)
+try:
+    driver.get('https://comic.naver.com/webtoon/detail?titleId=687915&no=348')
+    print('coffee 성공 https://comic.naver.com/webtoon/detail?titleId=687915&no=348 접속 ok')
+    time.sleep(1)
+
+    driver.execute_script('window.scrollTo(0, (document.body.scrollHeight)-2000) ;')
+    # driver.execute_script('window.scrollTo(0, document.body.scrollHeight) ;')
+    # driver.find_element(by=By.CLASS_NAME, value='u_cbox_list')
+
+    u_cbox_list = driver.find_element( by=By.CLASS_NAME, value='u_cbox_list')
+    comments = u_cbox_list.find_elements( By.CLASS_NAME, value='u_cbox_comment' )
+
+    result = []
+    path = 'C:/Users/dohyu/Desktop/crawling.txt'  # change path
+    cmFile = open(path, mode = 'w', encoding = 'utf-8')
+
+    # for 반복문
+    for ct in comments:
+        u_nick = ct.find_element(by=By.CLASS_NAME, value='u_cbox_nick').text
+        u_content = ct.find_element(by=By.CLASS_NAME, value='u_cbox_contents').text
+        u_date = ct.find_element(by=By.CLASS_NAME, value='u_cbox_date').text
+        u_recomm = ct.find_element(by=By.CLASS_NAME, value='u_cbox_cnt_recomm').text
+        print()
+        print('닉네임:{}, 댓글:{}, 날짜:{}, 추천수:{}'.format(u_nick, u_content, u_date, u_recomm))
+        cmFile.write( u_nick + ' ' + u_content + ' '+ u_date + ' ' + u_recomm + '\n')
+
+        # 데이터저장 - 파일처리(일반적인 text, 엑셀 csv), db처리
+        # 지정경로 data폴더, open(경로, r/w/a, 인코딩)
+        # 지정경로 data폴더, csv일 때 판다스 DataFrame(리스트, 열 생성)
+
+        result.append([u_nick]+[u_recomm])
+        naver_table = pd.DataFrame(result, columns=('nick', 'recomm'))
+        naver_table.to_csv('C:/Users/dohyu/Desktop/crawling.csv', encoding='cp949', mode='w', index=True)
+        # change path
+
+    time.sleep(12)
+    print(path, ' 저장 파일 성공 ~~~')
+
+except Exception as ex:
+    print('error', ex)
+    print('txt 저장 파일 실패 ~~~')
+
+
+'''
+<ul calss="u_cbox_list">
+  <li class="u_cbox_comment" >
+      span 글자영역만큼  class="u_cbox_nick" >
+      span 글자영역만큼  class="u_cbox_contents" >
+      span 글자영역만큼  class="u_cbox_cnt_recomm" >
+   </li>
+</ul>
+'''
+
+"""
+* tag
+<html> 
+ <head> 스타일, 자바 script </head>
+ <body> 
+   div 왼쪽 오른쪽
+   span 글자영역만큼 class="u_cbox_contents">
+   <div id = "myA"> #접근 </div>  # 중복하면 안됨
+   <div class = "myB"> .접근 </div>  # 중복해도 됨
+   <div> <unorder List> <li> </li> </ul> </div>
+ </body>
+</html>
+
+* p tag
+p태그 : paragraph 앞 글자를 딴 것. p태그 아의 문장은 하나의 문단.
+p태그 밖에서는 약간의 간격 유지
+
+<p> 라면 김밥 떡볶이 </p>
+<p> 돈까스 제육덮밥 </p>
+
+출력 결과 : 
+라면 김밥 떡볶이
+
+돈까스 제육덮밥 
+
+* div tag
+div태그 내 문장으로.
+
+<div> 라면 김밥 떡볶이 </div>
+<div> 돈까스 제육덮밥 </div>
+
+출력 결과 : 
+라면 김밥 떡볶이
+돈까스 제육덮밥 
+
+
+* span tag
+span 태그 : inline으로 주어진 데이터만큼만의 공간 가짐. 줄넘김 X
+
+<span> 라면 김밥 떡볶이 </span>
+<span> 돈까스 제육덮밥 </span>
+
+출력 결과 :
+라면 김밥 떡볶이 돈까스 제육덮밥 
+
+* 공공 데이터 포탈
+개인 API 인증키 복사하기
+한국문화관광연구원_관광자원통계서비스 - Key 받아오기
+한국문화관광연구원_출입국관광통계서비스
+
+data.go.kr
+
+"""
+
